@@ -111,8 +111,8 @@ impl Capstone {
     /// Create a new instance of the decompiler. Defaults to 64-bit little-endian mode.
     ///
     /// ```
-    /// use capstone::{self, Capstone};
-    /// let cs = Capstone::new(capstone::Arch::X86);
+    /// use capstone3::{self, Capstone};
+    /// let cs = Capstone::new(capstone3::Arch::X86);
     /// assert!(cs.is_ok());
     /// ```
     pub fn new(arch: Arch) -> Result<Capstone> {
