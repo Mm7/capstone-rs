@@ -168,15 +168,16 @@ impl Capstone {
 
     /// Disassemble a &[u8] `buffer` full of instructions
     ///
-    /// Disassembles all instructions in `code`. If you want to disassemble less, then pass a smaller slice :]
-    pub fn disassemble(&self, buffer: &[u8], addr: u64) -> Result<Instructions> {
+    /// Disassemble `count` instructions, 0 stands for disassemble until either there is no more
+    /// code or it capstone encunters a broken instruction.
+    pub fn disassemble(&self, buffer: &[u8], addr: u64, count: u64) -> Result<Instructions> {
         let mut ptr: *mut capstone_sys::cs_insn = ptr::null_mut();
         let insn_count = unsafe {
             cs_disasm(self.csh,
                       buffer.as_ptr(),
                       buffer.len() as libc::size_t,
                       addr,
-                      0 as libc::size_t,
+                      count as libc::size_t,
                       &mut ptr)
         };
         if insn_count == 0 {

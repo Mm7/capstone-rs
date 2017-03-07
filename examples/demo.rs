@@ -7,7 +7,7 @@ fn main() {
          Ok(cs) => {
              cs.detail().unwrap();
              cs.att();
-             match cs.disassemble(CODE, 0x1000) {
+             match cs.disassemble(CODE, 0x1000, 0) {
                  Ok(insns) => {
                      println!("Got {} instructions", insns.len());
                      for i in insns.iter() {

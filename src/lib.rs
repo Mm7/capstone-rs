@@ -6,7 +6,7 @@
 //! fn main() {
 //!     match capstone::Capstone::new(capstone::Arch::X86) {
 //!         Ok(cs) => {
-//!             match cs.disassemble(CODE, 0x1000) {
+//!             match cs.disassemble(CODE, 0x1000, 0) {
 //!                 Ok(insns) => {
 //!                     println!("Got {} instructions", insns.len());
 //!
@@ -58,7 +58,7 @@ mod test {
      fn test_x86_simple() {
          match capstone::Capstone::new(capstone::Arch::X86) {
              Ok(cs) => {
-                 match cs.disassemble(X86_CODE, 0x1000) {
+                 match cs.disassemble(X86_CODE, 0x1000, 0) {
                      Ok(insns) => {
                          assert_eq!(insns.len(), 2);
                          let is: Vec<_> = insns.iter().collect();
@@ -83,7 +83,7 @@ mod test {
     fn test_arm_simple() {
         match capstone::Capstone::new(capstone::Arch::ARM) {
             Ok(cs) => {
-                match cs.disassemble(ARM_CODE, 0x1000) {
+                match cs.disassemble(ARM_CODE, 0x1000, 0) {
                     Ok(insns) => {
                         assert_eq!(insns.len(), 2);
                         let is: Vec<_> = insns.iter().collect();
@@ -108,7 +108,7 @@ mod test {
     fn test_arm64_none() {
         match capstone::Capstone::new(capstone::Arch::ARM64) {
             Ok(cs) => {
-                match cs.disassemble(ARM_CODE, 0x1000) {
+                match cs.disassemble(ARM_CODE, 0x1000, 0) {
                     Ok(insns) => {
                         assert_eq!(insns.len(), 0);
                         let is: Vec<_> = insns.iter().collect();
@@ -171,4 +171,27 @@ mod test {
             }
         }
     }
+
+     #[test]
+     fn test_instr_count() {
+         match capstone::Capstone::new(capstone::Arch::X86) {
+             Ok(cs) => {
+                 match cs.disassemble(X86_CODE, 0x1000, 1) {
+                     Ok(insns) => {
+                         assert_eq!(insns.len(), 1);
+                         let is: Vec<_> = insns.iter().collect();
+                         assert_eq!(is[0].mnemonic().unwrap(), "push");
+                         assert_eq!(is[0].address(), 0x1000);
+                     },
+                     Err(err) => {
+                         assert!(false, "Couldn't disasm instructions: {}", err)
+                     }
+                 }
+             },
+             Err(e) => {
+                 assert!(false, "Couldn't create a cs engine: {}", e);
+             }
+         }
+     }
+
 }
